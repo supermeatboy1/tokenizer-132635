@@ -1,3 +1,7 @@
+// To stop opening a console window on Windows.
+// https://github.com/emilk/egui/issues/116
+#![windows_subsystem = "windows"]
+
 use crate::tokenizer::TokensResult;
 use egui::{FontId, RichText};
 use std::error::Error;

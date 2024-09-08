@@ -139,7 +139,7 @@ pub fn split_query(mixed: &str) -> (&str, &str) {
     let query: &str;
 
     for (index, c) in mixed.chars().enumerate() {
-        if !c.is_alphanumeric() && c != '.' {
+        if !c.is_alphanumeric() && c != '.' && c != '_' && c != '-' {
             first_part = &mixed[..index];
             query = &mixed[index..];
             return (first_part, query);
