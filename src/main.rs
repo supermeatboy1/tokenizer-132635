@@ -6,7 +6,7 @@ use crate::tokenizer::TokensResult;
 use egui::{FontId, RichText};
 use std::error::Error;
 
-use eframe::egui;
+use eframe::{egui, Theme};
 
 mod str_checker;
 mod tokenizer;
@@ -15,6 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_inner_size([1000.0, 650.0]),
         centered: true,
+        default_theme: Theme::Dark,
         ..Default::default()
     };
     eframe::run_native(
@@ -70,6 +71,8 @@ impl Default for GraphicApp {
 
 impl eframe::App for GraphicApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        ctx.set_visuals(egui::Visuals::dark());
+
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.with_layout(egui::Layout::top_down(egui::Align::Center), |ui| {
                 ui.label(
@@ -114,7 +117,6 @@ impl eframe::App for GraphicApp {
                 });
 
                 ui.add_space(10.0);
-                ui.label(&self.is_valid_url);
                 ui.add_space(10.0);
 
                 ui.columns(2, |columns| {
