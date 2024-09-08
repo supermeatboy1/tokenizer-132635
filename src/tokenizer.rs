@@ -93,13 +93,18 @@ impl TokensResult<'_> {
                 // Split the token if a punctuation is encountered.
                 if !c.is_alphanumeric() {
                     // Push the characters before the punctuation and the punctuation itself.
-                    result.granular_tokens.push(&token[start_index..index]);
+                    let before = &token[start_index..index];
+                    if !before.is_empty() {
+                        result.granular_tokens.push(before);
+                    }
                     result.granular_tokens.push(&token[index..index + 1]);
                     start_index = index + 1;
                 }
             }
             let last_part: &str = &token[start_index..];
-            result.granular_tokens.push(last_part);
+            if !last_part.is_empty() {
+                result.granular_tokens.push(last_part);
+            }
         }
 
         for token in &result.granular_tokens {
