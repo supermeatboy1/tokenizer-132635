@@ -148,10 +148,6 @@ impl eframe::App for GraphicApp {
                     columns[0].label(RichText::new("Query:").font(FontId::proportional(20.0)));
                     columns[0].add(egui::TextEdit::multiline(&mut self.query.as_str()));
                     columns[0].add_space(20.0);
-                    /*columns[1]
-                        .label(RichText::new("Other Tokens:").font(FontId::proportional(20.0)));
-                    columns[1].add(egui::TextEdit::multiline(&mut self.others.as_str()));
-                    columns[1].add_space(20.0);*/
                 });
 
                 ui.label(RichText::new("Granular breakdown:").font(FontId::proportional(20.0)));
