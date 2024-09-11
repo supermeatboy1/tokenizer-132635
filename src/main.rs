@@ -34,7 +34,7 @@ struct GraphicApp {
     host: String,
     directories: String,
     filename: String,
-    query: String,
+    suffix: String,
 
     words: String,
     punctuations: String,
@@ -55,7 +55,7 @@ impl Default for GraphicApp {
             host: String::default(),
             directories: String::default(),
             filename: String::default(),
-            query: String::default(),
+            suffix: String::default(),
 
             words: String::default(),
             punctuations: String::default(),
@@ -113,7 +113,7 @@ impl eframe::App for GraphicApp {
                         self.host = result.host.unwrap_or("").to_string();
                         self.directories = format_tokens(&result.directories);
                         self.filename = result.filename.unwrap_or("").to_string();
-                        self.query = result.query.unwrap_or("").to_string();
+                        self.suffix = result.suffix.unwrap_or("").to_string();
 
                         self.words = format_tokens(&result.words);
                         self.numbers = format_tokens(&result.numbers);
@@ -166,8 +166,8 @@ impl eframe::App for GraphicApp {
                     columns[1].add(egui::TextEdit::multiline(&mut self.alphanumeric.as_str()));
                     columns[1].add_space(20.0);
 
-                    columns[0].label(RichText::new("Query:").font(FontId::proportional(20.0)));
-                    columns[0].add(egui::TextEdit::multiline(&mut self.query.as_str()));
+                    columns[0].label(RichText::new("URL Suffix:").font(FontId::proportional(20.0)));
+                    columns[0].add(egui::TextEdit::multiline(&mut self.suffix.as_str()));
                     columns[0].add_space(20.0);
                 });
 

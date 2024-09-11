@@ -7,7 +7,7 @@ pub struct TokensResult<'a> {
     pub host: Option<&'a str>,
     pub directories: Vec<&'a str>,
     pub filename: Option<&'a str>,
-    pub query: Option<&'a str>,
+    pub suffix: Option<&'a str>,
 
     pub words: Vec<&'a str>,
     pub numbers: Vec<&'a str>,
@@ -46,7 +46,7 @@ impl TokensResult<'_> {
             host: None,
             directories: Vec::new(),
             filename: None,
-            query: None,
+            suffix: None,
             numbers: Vec::new(),
 
             words: Vec::new(),
@@ -74,17 +74,17 @@ impl TokensResult<'_> {
                 while let Some(token) = it.next() {
                     // Check if it's the last element in the list of tokens.
                     if it.peek().is_none() {
-                        let (filename, query) = split_query(token);
+                        let (filename, suffix) = split_suffix(token);
                         result.filename = Some(filename);
-                        result.query = Some(query);
+                        result.suffix = Some(suffix);
                     } else {
                         result.directories.push(token);
                     }
                 }
             } else {
-                let (host, query) = split_query(result.tokens.get(2).unwrap());
+                let (host, suffix) = split_suffix(result.tokens.get(2).unwrap());
                 result.host = Some(host);
-                result.query = Some(query);
+                result.suffix = Some(suffix);
             }
         }
 
@@ -145,18 +145,18 @@ pub fn is_valid_protocol(protocol_str: &str) -> bool {
     true
 }
 
-// Some url requests a query string after the filename.
+// Some URLs have a suffix after the filename.
 // --> for example: https://www.example.com/article/123?category=technology#section2
 // Separation should be done to properly extract the filename.
-pub fn split_query(mixed: &str) -> (&str, &str) {
+pub fn split_suffix(mixed: &str) -> (&str, &str) {
     let first_part: &str;
-    let query: &str;
+    let suffix: &str;
 
     for (index, c) in mixed.chars().enumerate() {
         if !c.is_alphanumeric() && (c == '?' || c == '#') {
             first_part = &mixed[..index];
-            query = &mixed[index + 1..];
-            return (first_part, query);
+            suffix = &mixed[index + 1..];
+            return (first_part, suffix);
         }
     }
     (mixed, "")
