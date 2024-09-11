@@ -20,18 +20,22 @@ pub struct TokensResult<'a> {
 
 impl TokensResult<'_> {
     pub fn granular(&self) -> String {
-        let mut granular_string = String::from("{\r\n");
+        let mut granular_string = String::from("[");
+        let mut has_tokens = false;
         for token in &self.granular_tokens {
-            granular_string.push_str(
-                format!(
-                    "    {} => {:?}\r\n",
-                    token,
-                    token.chars().into_iter().collect::<Vec<char>>()
-                )
-                .as_str(),
-            );
+            granular_string.push_str(format!("\r\n    {} => ", token).as_str());
+            for (index, c) in token.chars().enumerate() {
+                granular_string.push_str(format!("'{}'", c).as_str());
+                if index != token.len() - 1 {
+                    granular_string.push_str(", ");
+                }
+            }
+            has_tokens = true;
         }
-        granular_string.push_str("}\r\n");
+        if has_tokens {
+            granular_string.push_str("\r\n");
+        }
+        granular_string.push_str("]\r\n");
         granular_string
     }
     pub fn new<'a>(input_str: &'a str) -> TokensResult<'a> {
@@ -43,9 +47,9 @@ impl TokensResult<'_> {
             directories: Vec::new(),
             filename: None,
             query: None,
+            numbers: Vec::new(),
 
             words: Vec::new(),
-            numbers: Vec::new(),
             alphanumeric: Vec::new(),
             punctuations: Vec::new(),
 
@@ -125,6 +129,11 @@ impl TokensResult<'_> {
 }
 
 pub fn is_valid_protocol(protocol_str: &str) -> bool {
+    // Skip empty protocol string.
+    if protocol_str.len() == 0 {
+        return false;
+    }
+
     let end_index: usize = protocol_str.len() - 1;
     for (current_index, c) in protocol_str.chars().enumerate() {
         if (current_index != end_index && !c.is_alphabetic())
@@ -144,9 +153,9 @@ pub fn split_query(mixed: &str) -> (&str, &str) {
     let query: &str;
 
     for (index, c) in mixed.chars().enumerate() {
-        if !c.is_alphanumeric() && c != '.' && c != '_' && c != '-' {
+        if !c.is_alphanumeric() && (c == '?' || c == '#') {
             first_part = &mixed[..index];
-            query = &mixed[index..];
+            query = &mixed[index + 1..];
             return (first_part, query);
         }
     }

@@ -69,6 +69,20 @@ impl Default for GraphicApp {
     }
 }
 
+fn format_tokens<'a>(input: &'a Vec<&'a str>) -> String {
+    let mut output = String::from("[");
+    let mut has_elements = false;
+    for c in input {
+        output.push_str(format!("\r\n    '{}',", c).as_str());
+        has_elements = true;
+    }
+    if has_elements {
+        output.push_str("\r\n");
+    }
+    output.push_str("]\r\n");
+    output
+}
+
 impl eframe::App for GraphicApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_visuals(egui::Visuals::dark());
@@ -97,14 +111,14 @@ impl eframe::App for GraphicApp {
 
                         self.protocol = result.protocol.unwrap_or("").to_string();
                         self.host = result.host.unwrap_or("").to_string();
-                        self.directories = format!("{:#?}", result.directories);
+                        self.directories = format_tokens(&result.directories);
                         self.filename = result.filename.unwrap_or("").to_string();
                         self.query = result.query.unwrap_or("").to_string();
 
-                        self.words = format!("{:#?}", result.words);
-                        self.numbers = format!("{:#?}", result.numbers);
-                        self.alphanumeric = format!("{:#?}", result.alphanumeric);
-                        self.punctuations = format!("{:#?}", result.punctuations);
+                        self.words = format_tokens(&result.words);
+                        self.numbers = format_tokens(&result.numbers);
+                        self.alphanumeric = format_tokens(&result.alphanumeric);
+                        self.punctuations = format_tokens(&result.punctuations);
 
                         self.granular = result.granular();
 
@@ -117,6 +131,7 @@ impl eframe::App for GraphicApp {
                 });
 
                 ui.add_space(10.0);
+                ui.label(&self.is_valid_url);
                 ui.add_space(10.0);
 
                 ui.columns(2, |columns| {
